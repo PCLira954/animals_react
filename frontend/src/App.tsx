@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import TutorsList from './pages/TutorsList'
 import TutorForm from './pages/TutorForm'
@@ -20,6 +21,7 @@ const App: React.FC = () => {
           <main>
             <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
               <Route path="/tutores" element={<PrivateRoute><TutorsList /></PrivateRoute>} />
               <Route path="/tutor/:id" element={<PrivateRoute><TutorDetail /></PrivateRoute>} />

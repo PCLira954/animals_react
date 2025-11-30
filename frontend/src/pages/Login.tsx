@@ -1,7 +1,7 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import api, { setAuthToken } from '../api/api'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
 type FormData = {
@@ -34,7 +34,16 @@ const Login: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <input {...register('email', { required: true })} placeholder="Email" className="border p-2 rounded" />
         <input {...register('password', { required: true })} type="password" placeholder="Senha" className="border p-2 rounded" />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Entrar</button>
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">Entrar</button>
+        
+        <div className="text-center mt-2">
+          <p className="text-sm text-gray-600">
+            Não tem uma conta?{' '}
+            <Link to="/register" className="text-blue-600 hover:underline">
+              Cadastre-se
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   )
