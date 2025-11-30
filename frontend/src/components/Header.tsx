@@ -14,7 +14,7 @@ const Header: React.FC = () => {
   return (
     <header className="bg-white shadow p-4 flex justify-between items-center">
       <div className="flex items-center gap-4">
-        <Link to="/" className="font-bold text-lg">AnimalHotels</Link>
+        <Link to="/" className="font-bold text-lg">Animals Hotel</Link>
         {state.isAuthenticated && (
           <>
             <Link to="/tutores" className="text-sm">Tutores</Link>

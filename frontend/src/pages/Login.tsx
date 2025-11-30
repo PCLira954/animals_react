@@ -30,7 +30,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto mt-16 p-6 bg-white rounded shadow">
-      <h1 className="text-xl font-bold mb-4">Entrar</h1>
+      <h1 className="text-xl font-bold mb-4">Login</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <input {...register('email', { required: true })} placeholder="Email" className="border p-2 rounded" />
         <input {...register('password', { required: true })} type="password" placeholder="Senha" className="border p-2 rounded" />
