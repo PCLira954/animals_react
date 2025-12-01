@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api, { setAuthToken } from '../api/api';
 
@@ -50,10 +50,20 @@ const Login: React.FC = () => {
         />
         <button 
           type="submit" 
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Entrar
         </button>
+        
+        <div className="mt-4 text-center text-sm text-gray-600">
+          Ainda não tem uma conta?{' '}
+          <Link 
+            to="/register" 
+            className="font-medium text-blue-600 hover:text-blue-500 hover:underline"
+          >
+            Registre-se aqui
+          </Link>
+        </div>
       </form>
     </div>
   );

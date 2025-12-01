@@ -27,6 +27,12 @@ const Header: React.FC = () => {
               >
                 Tutores
               </Link>
+              <Link
+                to="/animais"
+                className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Animais
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"

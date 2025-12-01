@@ -6,6 +6,7 @@ import { AnimalProvider } from './contexts/AnimalContext';
 import PrivateRoute from './components/PrivateRoute';
 import Header from './components/Header';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import TutorsList from './pages/TutorsList';
 import TutorForm from './components/tutor/TutorForm';
@@ -26,6 +27,7 @@ const App: React.FC = () => {
                 <Routes>
                   {/* Rotas Públicas */}
                   <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
 
                   {/* Rotas Protegidas */}
                   <Route
