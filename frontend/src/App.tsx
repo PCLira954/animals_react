@@ -1,42 +1,84 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Header from './components/Header'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Dashboard from './pages/Dashboard'
-import TutorsList from './pages/TutorsList'
-import TutorForm from './pages/TutorForm'
-import TutorDetail from './pages/TutorDetail'
-import AnimalsList from './pages/AnimalsList'
-import AnimalForm from './pages/AnimalForm'
-import PrivateRoute from './components/PrivateRoute'
-import { AuthProvider } from './contexts/AuthContext'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { TutorProvider } from './contexts/TutorContext';
+import PrivateRoute from './components/PrivateRoute';
+import Header from './components/Header';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import TutorsList from './pages/TutorsList';
+import TutorForm from './components/tutor/TutorForm';
+import TutorDetail from './pages/TutorDetail';
 
-const App: React.FC = () => {
+function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <div className="min-h-screen bg-gray-100">
-          <Header />
-          <main>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-              <Route path="/tutores" element={<PrivateRoute><TutorsList /></PrivateRoute>} />
-              <Route path="/tutor/:id" element={<PrivateRoute><TutorDetail /></PrivateRoute>} />
-              <Route path="/tutor/:id/editar" element={<PrivateRoute><TutorForm /></PrivateRoute>} />
-              <Route path="/tutor/novo" element={<PrivateRoute><TutorForm /></PrivateRoute>} />
-              <Route path="/animais" element={<PrivateRoute><AnimalsList /></PrivateRoute>} />
-              <Route path="/animal/novo" element={<PrivateRoute><AnimalForm /></PrivateRoute>} />
-              <Route path="/animal/:id" element={<PrivateRoute><AnimalForm /></PrivateRoute>} />
-              <Route path="/animal/:id/editar" element={<PrivateRoute><AnimalForm /></PrivateRoute>} />
-            </Routes>
-          </main>
-        </div>
-      </BrowserRouter>
+      <TutorProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50">
+            <Header />
+            <main className="container mx-auto px-4 py-6">
+              <Routes>
+                {/* Rotas Públicas */}
+                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+
+                {/* Rotas Protegidas */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <PrivateRoute>
+                      <Dashboard />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/tutores"
+                  element={
+                    <PrivateRoute>
+                      <TutorsList />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/tutores/novo"
+                  element={
+                    <PrivateRoute>
+                      <TutorForm />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/tutores/:id/editar"
+                  element={
+                    <PrivateRoute>
+                      <TutorForm />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/tutores/:id"
+                  element={
+                    <PrivateRoute>
+                      <TutorDetail />
+                    </PrivateRoute>
+                  }
+                />
+
+                {/* Rota de fallback para páginas não encontradas */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
+          </div>
+        </Router>
+      </TutorProvider>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;

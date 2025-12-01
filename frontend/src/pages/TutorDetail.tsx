@@ -1,52 +1,121 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import api from '../api/api'
-import type { Tutor, Animal } from '../types'
+import React, { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTutors } from '../contexts/TutorContext';
+import type { Tutor } from '../types';
 
 const TutorDetail: React.FC = () => {
-  const { id } = useParams()
-  const [tutor, setTutor] = useState<Tutor | null>(null)
-  const [animals, setAnimals] = useState<Animal[]>([])
+  const { id } = useParams<{ id: string }>();
+  const { getTutor, deleteTutor, loading: _loading } = useTutors();
+  const [tutor, setTutor] = useState<Tutor | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const load = async () => {
-      if (!id) return
-      const resTutor = await api.get(`/tutores/${id}`)
-      setTutor(resTutor.data)
-      const resAnimals = await api.get(`/animais?tutorId=${id}`)
-      setAnimals(resAnimals.data)
+    if (id) {
+      const tutorData = getTutor(Number(id));
+      if (tutorData) {
+        setTutor(tutorData);
+      } else {
+        // Se não encontrar o tutor, redireciona para a lista
+        navigate('/tutores');
+      }
     }
-    load()
-  }, [id])
+  }, [id, getTutor, navigate]);
+
+  const handleDelete = async () => {
+    if (!id) return;
+    
+    if (window.confirm('Tem certeza que deseja excluir este tutor?')) {
+      try {
+        setIsDeleting(true);
+        await deleteTutor(Number(id));
+        navigate('/tutores');
+      } catch (err) {
+        console.error('Erro ao excluir tutor:', err);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
+  if (!tutor) {
+    return <div className="p-4">Carregando...</div>;
+  }
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold">Tutor: {tutor?.name}</h2>
-      <p>Email: {tutor?.email}</p>
-      <p>Telefone: {tutor?.phone}</p>
-
-      <div className="mt-6">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold">Animais</h3>
-          <Link to={`/animal/novo?tutorId=${id}`} className="px-2 py-1 border rounded">Adicionar Animal</Link>
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-gray-800">{tutor.name}</h1>
+            <div className="space-x-2">
+              <Link
+                to={`/tutores/${tutor.id}/editar`}
+                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+              >
+                Editar
+              </Link>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+              >
+                {isDeleting ? 'Excluindo...' : 'Excluir'}
+              </button>
+            </div>
+          </div>
         </div>
-        <ul className="space-y-2">
-          {animals.map(a => (
-            <li key={a.id} className="p-2 border rounded flex justify-between items-center">
-              <div>
-                <div className="font-semibold">{a.name}</div>
-                <div className="text-sm">{a.species} — {a.breed} — {a.age} anos</div>
+
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">Informações do Tutor</h2>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Nome</p>
+                  <p className="mt-1 text-sm text-gray-900">{tutor.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p className="mt-1 text-sm text-gray-900">{tutor.email}</p>
+                </div>
+                {tutor.phone && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Telefone</p>
+                    <p className="mt-1 text-sm text-gray-900">{tutor.phone}</p>
+                  </div>
+                )}
               </div>
-              <div>
-                <Link to={`/animal/${a.id}`} className="mr-2 text-blue-600">Ver</Link>
-                <Link to={`/animal/${a.id}/editar`} className="text-green-600">Editar</Link>
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">Animais</h2>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-500">Lista de animais aparecerá aqui</p>
+                <div className="mt-4">
+                  <Link
+                    to="/animais/novo"
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
+                  >
+                    + Adicionar Animal
+                  </Link>
+                </div>
               </div>
-            </li>
-          ))}
-        </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <Link
+              to="/tutores"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              &larr; Voltar para a lista de tutores
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TutorDetail
+export default TutorDetail;
