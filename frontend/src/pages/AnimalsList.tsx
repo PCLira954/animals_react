@@ -1,50 +1,124 @@
-import React, { useEffect, useState } from 'react'
-import api from '../api/api'
-import type { Animal } from '../types'
-import { Link } from 'react-router-dom'
+// frontend/src/pages/AnimaisList.tsx
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAnimals } from '../contexts/AnimalContext';
 
-const AnimalsList: React.FC = () => {
-  const [animals, setAnimals] = useState<Animal[]>([])
-
-  const fetchAnimals = async () => {
-    const res = await api.get('/animais?_expand=tutor')
-    setAnimals(res.data)
-  }
+const AnimaisList: React.FC = () => {
+  const { state: { animais, loading, error }, fetchAnimais, removeAnimal } = useAnimals();
 
   useEffect(() => {
-    fetchAnimals()
-  }, [])
+    fetchAnimais();
+  }, [fetchAnimais]);
 
-  const deleteAnimal = async (id?: number) => {
-    if (!id) return
-    if (!confirm('Excluir animal?')) return
-    await api.delete(`/animais/${id}`)
-    fetchAnimals()
-  }
+  const handleDelete = async (id: number) => {
+    if (window.confirm('Tem certeza que deseja excluir este animal?')) {
+      try {
+        await removeAnimal(id);
+      } catch (error) {
+        console.error('Erro ao excluir animal:', error);
+      }
+    }
+  };
+
+  if (loading) return <div>Carregando...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Animais</h2>
-        <Link to="/animal/novo" className="px-3 py-1 border rounded">Novo Animal</Link>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Animais</h1>
+        <Link
+          to="/animais/novo"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Adicionar Animal
+        </Link>
       </div>
 
-      <ul className="space-y-2">
-        {animals.map(a => (
-          <li key={a.id} className="p-3 border rounded flex justify-between items-center">
-            <div>
-              <div className="font-semibold">{a.name} <span className="text-sm text-gray-500">({a.species})</span></div>
-              <div className="text-sm">{a.breed} — Tutor ID: {a.tutorId}</div>
-            </div>
-            <div>
-              <Link to={`/animal/${a.id}`} className="mr-2 text-blue-600">Ver</Link>
-              <button onClick={() => deleteAnimal(a.id)} className="text-red-600">Excluir</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Nome
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Espécie
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Raça
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Idade
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tutor
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {animais.map((animal) => (
+              <tr key={animal.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    {animal.foto && (
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <img
+                          className="h-10 w-10 rounded-full"
+                          src={animal.foto}
+                          alt={animal.nome}
+                        />
+                      </div>
+                    )}
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {animal.nome}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
+                    {animal.especie === 'CACHORRO' ? 'Cachorro' : 'Gato'}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{animal.raca}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
+                    {animal.idade} {animal.idade === 1 ? 'ano' : 'anos'}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
+                    {animal.tutor?.nome || 'N/A'}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <Link
+                    to={`/animais/${animal.id}/editar`}
+                    className="text-blue-600 hover:text-blue-900 mr-4"
+                  >
+                    Editar
+                  </Link>
+                  <button
+                    onClick={() => animal.id && handleDelete(animal.id)}
+                    className="text-red-600 hover:text-red-900"
+                  >
+                    Excluir
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default AnimalsList
+export default AnimaisList;
