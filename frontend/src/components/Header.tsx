@@ -33,12 +33,17 @@ const Header: React.FC = () => {
               >
                 Animais
               </Link>
-              <button
-                onClick={handleLogout}
-                className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Sair
-              </button>
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-700 text-sm font-medium">
+                  Olá, {state.user?.name || 'Usuário'}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Sair
+                </button>
+              </div>
             </>
           ) : (
             <>
