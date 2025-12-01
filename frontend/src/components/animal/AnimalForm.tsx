@@ -6,11 +6,6 @@ import { useAnimals } from '../../contexts/AnimalContext';
 import { useTutors } from '../../contexts/TutorContext';
 import type { Animal, Species } from '../../types/animals';
 
-const racasPorEspecie: Record<Species, string[]> = {
-  GATO: ['Siamês', 'Persa', 'Maine Coon', 'Vira-lata', 'Outro'],
-  CACHORRO: ['Labrador', 'Poodle', 'Bulldog', 'Vira-lata', 'Outro'],
-};
-
 const AnimalForm: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
   const isEditing = Boolean(id);
@@ -133,20 +128,19 @@ const AnimalForm: React.FC = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Raça *</label>
-          <select
-            {...register('breed', { required: 'Raça é obrigatória' })}
+          <input
+            type="text"
+            {...register('breed', { 
+              required: 'Raça é obrigatória',
+              minLength: { value: 2, message: 'A raça deve ter pelo menos 2 caracteres' },
+              maxLength: { value: 50, message: 'A raça deve ter no máximo 50 caracteres' }
+            })}
             className={`mt-1 block w-full rounded-md border ${
               errors.breed ? 'border-red-500' : 'border-gray-300'
             } p-2`}
-            disabled={loading || !species}
-          >
-            <option value="">Selecione uma raça</option>
-            {racasPorEspecie[species]?.map((breed) => (
-              <option key={breed} value={breed}>
-                {breed}
-              </option>
-            ))}
-          </select>
+            placeholder="Digite a raça do animal"
+            disabled={loading}
+          />
           {errors.breed && (
             <p className="mt-1 text-sm text-red-600">{errors.breed.message}</p>
           )}
