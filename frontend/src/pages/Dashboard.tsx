@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTutors } from '../contexts/TutorContext';
+import { useAnimals } from '../contexts/AnimalContext';
 
 const Dashboard: React.FC = () => {
-  const { tutors, loading } = useTutors();
+  const { tutors, loading: loadingTutors } = useTutors();
+  const { state: { animais, loading: loadingAnimals } } = useAnimals();
 
   return (
     <div className="py-6">
@@ -50,7 +52,7 @@ const Dashboard: React.FC = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {loading ? '...' : tutors.length}
+                        {loadingTutors ? '...' : tutors.length}
                       </div>
                     </dd>
                   </dl>
@@ -93,7 +95,9 @@ const Dashboard: React.FC = () => {
                       Total de Animais
                     </dt>
                     <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">0</div>
+                      <div className="text-2xl font-semibold text-gray-900">
+                        {loadingAnimals ? '...' : animais.length}
+                      </div>
                     </dd>
                   </dl>
                 </div>
