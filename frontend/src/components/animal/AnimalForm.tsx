@@ -4,9 +4,9 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAnimals } from '../../contexts/AnimalContext';
 import { useTutors } from '../../contexts/TutorContext';
-import type { Animal, Especie } from '../../types/animals';
+import type { Animal, Species } from '../../types/animals';
 
-const racasPorEspecie: Record<Especie, string[]> = {
+const racasPorEspecie: Record<Species, string[]> = {
   GATO: ['Siamês', 'Persa', 'Maine Coon', 'Vira-lata', 'Outro'],
   CACHORRO: ['Labrador', 'Poodle', 'Bulldog', 'Vira-lata', 'Outro'],
 };
@@ -23,7 +23,7 @@ const AnimalForm: React.FC = () => {
   } = useAnimals();
   
   const { tutors } = useTutors();
-  const [especie, setEspecie] = useState<Especie>('CACHORRO');
+  const [species, setSpecies] = useState<Species>('CACHORRO');
 
   const {
     register,
@@ -34,23 +34,23 @@ const AnimalForm: React.FC = () => {
     reset
   } = useForm<Omit<Animal, 'id'>>({
     defaultValues: {
-      especie: 'CACHORRO',
-      raca: '',
-      nome: '',
-      idade: 0,
+      species: 'CACHORRO',
+      breed: '',
+      name: '',
+      age: 0,
       tutorId: undefined,
       foto: ''
     }
   });
 
-  // Observa mudanças no valor do campo espécie
-  const currentEspecie = watch('especie');
+  // Observa mudanças no valor do campo species
+  const currentSpecies = watch('species');
 
   useEffect(() => {
-    if (currentEspecie) {
-      setEspecie(currentEspecie);
+    if (currentSpecies) {
+      setSpecies(currentSpecies);
     }
-  }, [currentEspecie]);
+  }, [currentSpecies]);
 
   useEffect(() => {
     if (isEditing && id) {
@@ -58,13 +58,13 @@ const AnimalForm: React.FC = () => {
         try {
           const animal = await getAnimal(Number(id));
           if (animal) {
-            setEspecie(animal.especie);
+            setSpecies(animal.species);
             // Preenche os campos do formulário com os dados do animal
             reset({
-              nome: animal.nome,
-              especie: animal.especie,
-              raca: animal.raca,
-              idade: animal.idade,
+              name: animal.name,
+              species: animal.species,
+              breed: animal.breed,
+              age: animal.age,
               tutorId: animal.tutorId,
               foto: animal.foto || ''
             });
@@ -101,54 +101,54 @@ const AnimalForm: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">Nome *</label>
           <input
             type="text"
-            {...register('nome', { required: 'Nome é obrigatório' })}
+            {...register('name', { required: 'Nome é obrigatório' })}
             className={`mt-1 block w-full rounded-md border ${
-              errors.nome ? 'border-red-500' : 'border-gray-300'
+              errors.name ? 'border-red-500' : 'border-gray-300'
             } p-2`}
             disabled={loading}
           />
-          {errors.nome && (
-            <p className="mt-1 text-sm text-red-600">{errors.nome.message}</p>
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Espécie *</label>
           <select
-            {...register('especie', { 
+            {...register('species', { 
               required: 'Espécie é obrigatória'
             })}
             className={`mt-1 block w-full rounded-md border ${
-              errors.especie ? 'border-red-500' : 'border-gray-300'
+              errors.species ? 'border-red-500' : 'border-gray-300'
             } p-2`}
             disabled={loading}
           >
             <option value="CACHORRO">Cachorro</option>
             <option value="GATO">Gato</option>
           </select>
-          {errors.especie && (
-            <p className="mt-1 text-sm text-red-600">{errors.especie.message}</p>
+          {errors.species && (
+            <p className="mt-1 text-sm text-red-600">{errors.species.message}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Raça *</label>
           <select
-            {...register('raca', { required: 'Raça é obrigatória' })}
+            {...register('breed', { required: 'Raça é obrigatória' })}
             className={`mt-1 block w-full rounded-md border ${
-              errors.raca ? 'border-red-500' : 'border-gray-300'
+              errors.breed ? 'border-red-500' : 'border-gray-300'
             } p-2`}
-            disabled={loading || !especie}
+            disabled={loading || !species}
           >
             <option value="">Selecione uma raça</option>
-            {racasPorEspecie[especie]?.map((raca) => (
-              <option key={raca} value={raca}>
-                {raca}
+            {racasPorEspecie[species]?.map((breed) => (
+              <option key={breed} value={breed}>
+                {breed}
               </option>
             ))}
           </select>
-          {errors.raca && (
-            <p className="mt-1 text-sm text-red-600">{errors.raca.message}</p>
+          {errors.breed && (
+            <p className="mt-1 text-sm text-red-600">{errors.breed.message}</p>
           )}
         </div>
 
@@ -158,18 +158,18 @@ const AnimalForm: React.FC = () => {
             type="number"
             min="0"
             step="0.5"
-            {...register('idade', { 
+            {...register('age', { 
               required: 'Idade é obrigatória',
               min: { value: 0, message: 'Idade deve ser maior ou igual a zero' },
               valueAsNumber: true
             })}
             className={`mt-1 block w-full rounded-md border ${
-              errors.idade ? 'border-red-500' : 'border-gray-300'
+              errors.age ? 'border-red-500' : 'border-gray-300'
             } p-2`}
             disabled={loading}
           />
-          {errors.idade && (
-            <p className="mt-1 text-sm text-red-600">{errors.idade.message}</p>
+          {errors.age && (
+            <p className="mt-1 text-sm text-red-600">{errors.age.message}</p>
           )}
         </div>
 

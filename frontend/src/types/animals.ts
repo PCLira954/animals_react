@@ -1,15 +1,17 @@
 export interface Animal {
   id?: number;
-  nome: string;
-  especie: 'GATO' | 'CACHORRO';
-  raca: string;
-  idade: number;
+  name: string;
+  species: string;
+  breed?: string;
+  age?: number;
   tutorId: number;
   foto: string;
   tutor?: {
     id: number;
-    nome: string;
+    name: string;
+    email: string;
+    phone?: string;
   };
 }
 
-export type Especie = Animal['especie'];
+export type Species = Animal['species'];

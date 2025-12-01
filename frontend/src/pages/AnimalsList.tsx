@@ -69,33 +69,33 @@ const AnimaisList: React.FC = () => {
                         <img
                           className="h-10 w-10 rounded-full"
                           src={animal.foto}
-                          alt={animal.nome}
+                          alt={animal.name || 'Sem nome'}
                         />
                       </div>
                     )}
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">
-                        {animal.nome}
+                        {animal.name || 'Sem nome'}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {animal.especie === 'CACHORRO' ? 'Cachorro' : 'Gato'}
+                    {animal.species === 'CACHORRO' ? 'Cachorro' : 'Gato'}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{animal.raca}</div>
+                  <div className="text-sm text-gray-900">{animal.breed || 'N/A'}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {animal.idade} {animal.idade === 1 ? 'ano' : 'anos'}
+                    {animal.age !== undefined ? `${animal.age} ${animal.age === 1 ? 'ano' : 'anos'}` : 'Não informada'}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {animal.tutor?.nome || 'N/A'}
+                    {animal.tutor?.name || 'N/A'}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
